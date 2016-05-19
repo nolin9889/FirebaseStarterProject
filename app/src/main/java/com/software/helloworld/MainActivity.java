@@ -9,7 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.firebase.client.Firebase;
+
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+       // DialogInterface.OnClickListener listener;
+        Firebase.setAndroidContext(this);
+
+
 
     }
 
@@ -28,20 +36,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void submit(View button) {
+    public void submit(View button){
 
         EditText etName = (EditText) findViewById(R.id.EditTextName);
         EditText etId = (EditText) findViewById(R.id.EditTextId);
-        String name = etName.getText().toString();
-        String id = etId.getText().toString();
+        final String name = etName.getText().toString();
+        final String id = etId.getText().toString();
 
+        System.err.println("Above new Firebase");
+        Firebase myFirebaseRef = new Firebase("https://nolin-110.firebaseio.com/student");
         Student student = new Student();
         student.setName(name);
         student.setStudentId(id);
+        myFirebaseRef.child(student.getStudentId()).setValue(student);
+/*
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.err.println("onClick in MainActivity is working!");
+                Firebase myFirebaseRef = new Firebase("https://nolin-110.firebaseio.com/student");
+                Student student = new Student();
+                student.setName(name);
+                student.setStudentId(id);
+                myFirebaseRef.child(student.getStudentId()).setValue(student);
+            }
+        });  */
+
 
         Intent output = new Intent();
         setResult(RESULT_OK, output);
         finish();
+        //Button button2 = (Button) findViewById(R.id.Submit);
+
+      //  final Firebase myFirebaseRef = new Firebase("https://nolin-110.firebaseio.com/student");
+
+
+
+
+
     }
 
 
