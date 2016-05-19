@@ -14,7 +14,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -25,11 +27,47 @@ import com.firebase.client.ValueEventListener;
 
 
 public class SearchActivity extends ActionBarActivity {
+    Firebase mref;
+    TextView textView;
+    Button b1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+    }
+    protected void onStart() {
+        super.onStart();
+        System.err.println("Hello from onstart");
+        textView = (TextView) findViewById (R.id.TextViewTitle);
+        b1 = (Button) findViewById (R.id.Send);
+        // User 1 reading from /first
+        mref = new Firebase ("https://nolin-110.firebaseio.com/first");
+        mref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String data = dataSnapshot.getValue (String.class);
+                textView.setText(data);
+                Toast.makeText(getBaseContext(), data, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View v) {
+                // User 1 writing to /second
+                System.err.println("Hello from b1 onclick");
+                mref = new Firebase("https://nolin-110.firebaseio.com/second");
+                EditText editText = (EditText)findViewById(R.id.EditTextId);
+                String edit = editText.getText().toString();
+                mref.setValue(edit);
+            }
+        });
 
     }
 
